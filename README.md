@@ -1,65 +1,47 @@
-# nvm-status README
+# NVM Status 🚀
 
-This is the README for your extension "nvm-status". After writing up a brief description, we recommend including the following sections.
+A lightweight Visual Studio Code extension that automatically detects your project's Node.js version from the `.nvmrc` file and displays it in the Status Bar. It also helps you keep your integrated terminal in sync with the required version.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- **Automatic Detection**: Reads the `.nvmrc` file in your workspace root.
+- **Status Bar Widget**: Displays the required Node.js version with a 🚀 icon in the bottom right corner.
+- **Visual Alerts**: Highlights the widget when a specific version is required by the project.
+- **Terminal Sync**: Automatically sends the `nvm use` command whenever you open a new integrated terminal.
 
-For example if there is an image subfolder under your extension project workspace:
+## How it Works
 
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+1. The extension looks for a `.nvmrc` file in your open folder.
+2. If found, it displays **"Node: [version]"** in the Status Bar.
+3. If no file is found, it defaults to showing **"Node: Global"**.
+4. When you open a terminal, it waits 1 second for the shell to load and then executes `nvm use` for you.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- **NVM (Node Version Manager)** must be installed on your system.
+- For macOS/Linux users, ensure `nvm` is correctly loaded in your `~/.zshrc` or `~/.bashrc`.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+* `nvm-status-switch.enable`: Enable/disable the status bar widget.
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- Since `nvm` is a shell function and not a binary, the terminal sync requires your default shell to have `nvm` initialized.
 
-## Release Notes
+## Installation
 
-Users appreciate release notes as you update your extension.
+### From Source
+1. Clone this repository.
+2. Run `npm install`.
+3. Press `F5` to open a Guest window and test the extension.
 
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+### Manual Install (.vsix)
+1. Download the `.vsix` file from the releases.
+2. In VS Code, go to Extensions -> `...` -> **Install from VSIX**.
 
 ---
 
-## Working with Markdown
-
-You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+**Developed by Owen Lobato** | Built for developers who switch contexts between projects often.

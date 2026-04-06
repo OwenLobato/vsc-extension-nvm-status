@@ -1,22 +1,41 @@
 {
-  "name": "nvm-status",
-  "displayName": "nvm-status",
-  "description": "Display current node version",
+  "name": "nvm-status-switch",
+  "displayName": "NVM Status Switch",
+  "description": "Automatically detects .nvmrc and switches Node.js versions in your terminal",
   "version": "0.0.1",
+  "publisher": "OwenLobatoV",
+  "author": {
+    "name": "OwenLobato"
+  },
+  "icon": "icon.png",
+  "keywords": [
+    "nvm",
+    "node",
+    "version",
+    "nvmrc",
+    "switch"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OwenLobato/vsc-extension-nvm-status.git"
+  },
+  "license": "MIT",
   "engines": {
     "vscode": "^1.110.0"
   },
   "categories": [
+    "Programming Languages",
     "Other"
   ],
   "activationEvents": [],
-  "main": "./extension.js",
+  "main": "./src/index.js",
   "contributes": {
     "commands": [{
-      "command": "nvm-status.helloWorld",
-      "title": "Hello World"
+      "command": "nvm-status-switch.syncNode",
+      "title": "NVM: Sync Node Version"
     }]
   },
+  "pricing": "Free",
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
