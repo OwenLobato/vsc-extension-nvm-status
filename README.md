@@ -1,47 +1,33 @@
-# NVM Status 🚀
+# NVM Status Switch 🚀
 
-A lightweight Visual Studio Code extension that automatically detects your project's Node.js version from the `.nvmrc` file and displays it in the Status Bar. It also helps you keep your integrated terminal in sync with the required version.
+A powerful Visual Studio Code extension to switch and install Node.js from the status bar and sidebar using `nvm` (Node Version Manager). It detects your project's requirements, warns you of mismatches, and syncs your integrated terminals.
 
 ## Features
 
-- **Automatic Detection**: Reads the `.nvmrc` file in your workspace root.
-- **Status Bar Widget**: Displays the required Node.js version with a 🚀 icon in the bottom right corner.
-- **Visual Alerts**: Highlights the widget when a specific version is required by the project.
-- **Terminal Sync**: Automatically sends the `nvm use` command whenever you open a new integrated terminal.
+### 🟢 Status Bar & Version Picker
+* **Real-time UI**: Shows the currently active Node version.
+* **Quick Pick**: Click the Status Bar item to open a version picker showing installed versions.
+* **Project Mismatch Warning**: If your active Node version doesn't match the project's `.nvmrc` or `package.json`, the status bar changes color to warn you.
 
-## How it Works
+### 📁 Project Declaration Scan
+NodeSwitcher determines a "project" Node expectation by consulting sources in order:
+1. `.nvmrc`
+2. `package.json` (`engines.node`)
 
-1. The extension looks for a `.nvmrc` file in your open folder.
-2. If found, it displays **"Node: [version]"** in the Status Bar.
-3. If no file is found, it defaults to showing **"Node: Global"**.
-4. When you open a terminal, it waits 1 second for the shell to load and then executes `nvm use` for you.
+### 💻 Terminal Environment Sync
+When you switch versions, the extension updates VS Code's environment API (`PATH`). Newly opened terminals will automatically use the selected Node version.
 
 ## Requirements
 
-- **NVM (Node Version Manager)** must be installed on your system.
-- For macOS/Linux users, ensure `nvm` is correctly loaded in your `~/.zshrc` or `~/.bashrc`.
+* **macOS / Linux**: `nvm` must be installed and available in your environment (`~/.zshrc` or `~/.bashrc`).
+* **Windows**: `nvm-windows` must be on your `PATH`.
+* **VS Code**: ^1.110.0 or newer. A folder opened as a workspace is recommended.
 
-## Extension Settings
-
-This extension contributes the following settings:
-
-* `nvm-status-switch.enable`: Enable/disable the status bar widget.
-
-## Known Issues
-
-- Since `nvm` is a shell function and not a binary, the terminal sync requires your default shell to have `nvm` initialized.
-
-## Installation
-
-### From Source
-1. Clone this repository.
-2. Run `npm install`.
-3. Press `F5` to open a Guest window and test the extension.
-
-### Manual Install (.vsix)
-1. Download the `.vsix` file from the releases.
-2. In VS Code, go to Extensions -> `...` -> **Install from VSIX**.
+## Quick Start
+1. Install `nvm` (Unix) or `nvm-windows` (Windows).
+2. Install this extension.
+3. Click the **Node** entry in the status bar to choose a version.
+4. In integrated terminals, run `node -v` to confirm the switch.
 
 ---
-
-**Developed by Owen Lobato** | Built for developers who switch contexts between projects often.
+**Developed by Owen Lobato** | Built for developers who switch contexts between projects seamlessly.

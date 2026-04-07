@@ -1,36 +1,45 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
-
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+const { initStatusBar, updateStatusBar } = require('./status-bar');
+const { showVersionPicker } = require('./picker');
 
 /**
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
+  console.log('🚀 NVM Status Switch: Starting activation...');
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "nvm-status-switch" is now active!');
+  try {
+    initStatusBar(context);
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('nvm-status-switch.syncNode', function () {
-		// The code you place here will be executed every time your command is executed
+    // Register showPicker Command
+    const pickerCommand = vscode.commands.registerCommand(
+      'nvm-status-switch.showPicker',
+      async () => {
+        await showVersionPicker();
+      },
+    );
+    context.subscriptions.push(pickerCommand);
 
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from nvm-status-switch!!!');
-	});
+    // Register events (Change tab & Open folders)
+    context.subscriptions.push(
+      vscode.window.onDidChangeActiveTextEditor(updateStatusBar),
+    );
+    context.subscriptions.push(
+      vscode.workspace.onDidChangeWorkspaceFolders(updateStatusBar),
+    );
 
-	context.subscriptions.push(disposable);
+    // Initial activation
+    updateStatusBar();
+
+    console.log('✅ NVM Status Switch: Activation completed successfully.');
+  } catch (error) {
+    console.error('❌ NVM Status Switch: Error during activation:', error);
+  }
 }
 
-// This method is called when your extension is deactivated
 function deactivate() {}
 
 module.exports = {
-	activate,
-	deactivate
-}
+  activate,
+  deactivate,
+};

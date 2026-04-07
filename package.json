@@ -1,8 +1,8 @@
 {
   "name": "nvm-status-switch",
   "displayName": "NVM Status Switch",
-  "description": "Automatically detects .nvmrc and switches Node.js versions in your terminal",
-  "version": "0.0.1",
+  "description": "Automatically detects and switches Node.js versions",
+  "version": "0.0.2",
   "publisher": "OwenLobatoV",
   "author": {
     "name": "OwenLobato"
@@ -13,7 +13,8 @@
     "node",
     "version",
     "nvmrc",
-    "switch"
+    "switch",
+    "manager"
   ],
   "repository": {
     "type": "git",
@@ -27,13 +28,18 @@
     "Programming Languages",
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./src/index.js",
   "contributes": {
-    "commands": [{
-      "command": "nvm-status-switch.syncNode",
-      "title": "NVM: Sync Node Version"
-    }]
+    "commands": [
+      {
+        "command": "nvm-status-switch.showPicker",
+        "title": "NVM Status Switch: Select Node Version",
+        "icon": "$(versions)"
+      }
+    ]
   },
   "pricing": "Free",
   "scripts": {
