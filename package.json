@@ -38,6 +38,11 @@
         "command": "nvm-status-switch.showPicker",
         "title": "NVM Status Switch: Select Node Version",
         "icon": "$(versions)"
+      },
+      {
+        "command": "nvm-status-switch.refreshUI",
+        "title": "NVM Status Switch: Refresh Project Version",
+        "icon": "$(refresh)"
       }
     ]
   },

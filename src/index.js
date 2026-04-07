@@ -1,6 +1,6 @@
 const vscode = require('vscode');
 const { initStatusBar, updateStatusBar } = require('./status-bar');
-const { showVersionPicker } = require('./picker');
+const { showVersionPicker, setPickerContext } = require('./picker');
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -10,6 +10,7 @@ function activate(context) {
 
   try {
     initStatusBar(context);
+    setPickerContext(context);
 
     // Register showPicker Command
     const pickerCommand = vscode.commands.registerCommand(
@@ -18,7 +19,18 @@ function activate(context) {
         await showVersionPicker();
       },
     );
+
+    // Register refreshUI Command
+    const refreshCommand = vscode.commands.registerCommand(
+      'nvm-status-switch.refreshUI',
+      () => {
+        updateStatusBar();
+      },
+    );
+
+    // Commands subscriptions
     context.subscriptions.push(pickerCommand);
+    context.subscriptions.push(refreshCommand);
 
     // Register events (Change tab & Open folders)
     context.subscriptions.push(

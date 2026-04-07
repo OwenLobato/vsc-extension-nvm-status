@@ -1,6 +1,14 @@
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const { execSync } = require('child_process');
+
+// Internal memory of the extension
+let activeVersionOverride = null;
+
+function setActiveVersion(version) {
+  activeVersionOverride = version;
+}
 
 function getExpectedVersion(rootPath) {
   // Search option 1) .nvmrc
@@ -9,7 +17,7 @@ function getExpectedVersion(rootPath) {
     return fs.readFileSync(nvmrcPath, 'utf8').trim().replace(/^v/, '');
   }
 
-  // Serach option 2) package.json
+  // Search option 2) package.json
   const pkgPath = path.join(rootPath, 'package.json');
   if (fs.existsSync(pkgPath)) {
     try {
@@ -27,6 +35,11 @@ function getExpectedVersion(rootPath) {
 }
 
 function getCurrentVersion() {
+  // Use the version the user just selected from the menu
+  if (activeVersionOverride) {
+    return activeVersionOverride;
+  }
+
   try {
     // Run 'node -v' on the user's system
     // Use a shell to read the environment variables correctly
@@ -39,7 +52,28 @@ function getCurrentVersion() {
   }
 }
 
+function getInstalledNodeVersions() {
+  try {
+    const nvmVersionsPath = path.join(os.homedir(), '.nvm', 'versions', 'node');
+    if (fs.existsSync(nvmVersionsPath)) {
+      const versions = fs
+        .readdirSync(nvmVersionsPath)
+        .filter((dir) => dir.startsWith('v'))
+        .map((dir) => dir.replace(/^v/, ''));
+
+      return versions.sort((a, b) =>
+        b.localeCompare(a, undefined, { numeric: true }),
+      );
+    }
+  } catch (e) {
+    console.error('Error reading nvm directory', e);
+  }
+  return [];
+}
+
 module.exports = {
   getExpectedVersion,
   getCurrentVersion,
+  getInstalledNodeVersions,
+  setActiveVersion,
 };
