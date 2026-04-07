@@ -1,6 +1,13 @@
 const vscode = require('vscode');
 const { initStatusBar, updateStatusBar } = require('./status-bar');
-const { showVersionPicker, setPickerContext } = require('./picker');
+const {
+  showVersionPicker,
+  setPickerContext,
+  applyVersionDirectly,
+} = require('./picker');
+const { NodeVersionsProvider } = require('./sidebar');
+
+let nodeVersionsProvider;
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -11,6 +18,21 @@ function activate(context) {
   try {
     initStatusBar(context);
     setPickerContext(context);
+
+    // Initialize the Sidebar
+    const rootPath =
+      vscode.workspace.workspaceFolders &&
+      vscode.workspace.workspaceFolders.length > 0
+        ? vscode.workspace.workspaceFolders[0].uri.fsPath
+        : undefined;
+
+    nodeVersionsProvider = new NodeVersionsProvider(rootPath);
+
+    // Register nvm.versionsView provider
+    vscode.window.registerTreeDataProvider(
+      'nvm.versionsView',
+      nodeVersionsProvider,
+    );
 
     // Register showPicker Command
     const pickerCommand = vscode.commands.registerCommand(
@@ -25,19 +47,39 @@ function activate(context) {
       'nvm-status-switch.refreshUI',
       () => {
         updateStatusBar();
+        // Refresh the sidebar
+        if (nodeVersionsProvider) {
+          nodeVersionsProvider.refresh();
+        }
+      },
+    );
+
+    // Register applyVersion Command
+    const applyCommand = vscode.commands.registerCommand(
+      'nvm-status-switch.applyVersion',
+      (version) => {
+        applyVersionDirectly(version);
       },
     );
 
     // Commands subscriptions
     context.subscriptions.push(pickerCommand);
     context.subscriptions.push(refreshCommand);
+    context.subscriptions.push(applyCommand);
 
-    // Register events (Change tab & Open folders)
+    // Register listeners (Change tab & Open folders)
     context.subscriptions.push(
-      vscode.window.onDidChangeActiveTextEditor(updateStatusBar),
+      vscode.window.onDidChangeActiveTextEditor(() => {
+        updateStatusBar();
+        if (nodeVersionsProvider) nodeVersionsProvider.refresh();
+      }),
     );
+
     context.subscriptions.push(
-      vscode.workspace.onDidChangeWorkspaceFolders(updateStatusBar),
+      vscode.workspace.onDidChangeWorkspaceFolders(() => {
+        updateStatusBar();
+        if (nodeVersionsProvider) nodeVersionsProvider.refresh();
+      }),
     );
 
     // Initial activation

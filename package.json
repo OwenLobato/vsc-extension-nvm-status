@@ -44,7 +44,35 @@
         "title": "NVM Status Switch: Refresh Project Version",
         "icon": "$(refresh)"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "nvm-sidebar",
+          "title": "NVM Status Switch",
+          "icon": "$(rocket)"
+        }
+      ]
+    },
+    "views": {
+      "nvm-sidebar": [
+        {
+          "id": "nvm.versionsView",
+          "name": "Installed Versions",
+          "icon": "$(versions)"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "NVM Status Switch",
+      "properties": {
+        "nvmStatusSwitch.showInStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show or hide the status bar entry."
+        }
+      }
+    }
   },
   "pricing": "Free",
   "scripts": {

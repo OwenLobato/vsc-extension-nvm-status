@@ -36,11 +36,18 @@ async function showVersionPicker() {
   const options = installedVersions.map((v) => {
     const isCurrent = v === currentVersion;
     const isProject = v === projectVersion;
+    const isMatch = isCurrent && isProject;
+
 
     // List of tags for the description
     let tags = [];
-    if (isCurrent) tags.push('$(tag) Current');
-    if (isProject) tags.push('$(star-full) Project requirement');
+    if (isMatch) {
+      tags.push('$(pass-filled) Expected & Current');
+    } else if (isCurrent) {
+      tags.push('$(tag) Current');
+    } else if (isProject) {
+      tags.push('$(pass) Expected');
+    }
 
     return {
       label: `v${v}`,
@@ -51,11 +58,11 @@ async function showVersionPicker() {
   });
 
   // Sort so that the project appears at the top if it exists.
-  options.sort((a, b) => {
-    if (a.description.includes('Project')) return -1;
-    if (b.description.includes('Project')) return 1;
-    return 0;
-  });
+  // options.sort((a, b) => {
+  //   if (a.description.includes('Expected')) return -1;
+  //   if (b.description.includes('Expected')) return 1;
+  //   return 0;
+  // });
 
   const selection = await vscode.window.showQuickPick(options, {
     placeHolder: projectVersion
@@ -95,7 +102,38 @@ async function showVersionPicker() {
   }
 }
 
+function applyVersionDirectly(versionNumber) {
+  if (extensionContext) {
+    const nvmBinPath = path.join(
+      os.homedir(),
+      '.nvm',
+      'versions',
+      'node',
+      `v${versionNumber}`,
+      'bin',
+    );
+    extensionContext.environmentVariableCollection.prepend(
+      'PATH',
+      `${nvmBinPath}${path.delimiter}`,
+    );
+
+    vscode.window.terminals.forEach((terminal) => {
+      terminal.sendText(`nvm use ${versionNumber}`);
+    });
+
+    setActiveVersion(versionNumber);
+
+    // Refresh the entire UI (Status bar and Sidebar)
+    vscode.commands.executeCommand('nvm-status-switch.refreshUI');
+
+    vscode.window.showInformationMessage(
+      `Node v${versionNumber} activated from Sidebar.`,
+    );
+  }
+}
+
 module.exports = {
   showVersionPicker,
   setPickerContext,
+  applyVersionDirectly,
 };
